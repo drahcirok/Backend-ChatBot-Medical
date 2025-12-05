@@ -1,28 +1,28 @@
-🏥 Chatbot Médico - Backend con OpenAI
-Backend para un sistema médico con chatbot inteligente que analiza exámenes clínicos usando GPT-3.5 de OpenAI.
+# 🏥 Chatbot Médico - Backend con OpenAI
 
-🌟 Características
-🤖 Chatbot médico especializado en análisis de exámenes clínicos
+Backend para un sistema médico con chatbot inteligente que analiza exámenes clínicos usando **OpenAI GPT-3.5**.
 
-🧪 3 pacientes predefinidos con historiales médicos completos
+---
 
-🧠 Integración con OpenAI GPT-3.5 para respuestas inteligentes
+## 🌟 Características
 
-📊 Endpoints RESTful para consultas y gestión de pacientes
+- 🤖 Chatbot médico especializado en análisis de exámenes clínicos  
+- 🧪 3 pacientes predefinidos con historiales médicos completos  
+- 🧠 Integración con OpenAI GPT-3.5 para respuestas inteligentes  
+- 📊 Endpoints RESTful para consultas y gestión de pacientes  
+- 🔄 Actualización en tiempo real de datos del paciente  
+- 🚀 Preparado para despliegue en Render.com  
 
-🔄 Actualización en tiempo real de datos del paciente
+---
 
-🚀 Preparado para despliegue en Render.com
+## 📋 Requisitos Previos
 
-📋 Requisitos Previos
-Node.js 14 o superior
+- Node.js 14 o superior  
+- npm 6 o superior  
+- Cuenta en OpenAI  
+- Git (opcional)
 
-npm 6 o superior
-
-Cuenta en OpenAI (para obtener API key)
-
-Git (opcional, para clonar)
-
+---
 🚀 Instalación Rápida
 1. Clonar el repositorio
 ```bash
