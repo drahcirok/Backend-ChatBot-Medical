@@ -35,11 +35,12 @@ npm install
 ```
 3. Configurar variables de entorno
 Crea un archivo .env en la raíz del proyecto:
-
+```bash
 env
 PORT=3000
 OPENAI_API_KEY=tu_clave_api_de_openai_aqui
 NODE_ENV=development
+```
 4. Obtener API Key de OpenAI
 Ve a https://platform.openai.com/api-keys
 
