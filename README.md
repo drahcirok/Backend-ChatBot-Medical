@@ -149,21 +149,26 @@ Exámenes: Curva de tolerancia a glucosa, Hemoglobina glicosilada
 
 Valores destacados: Glucosa elevada, HbA1c alto (7.8%)
 
-🏗️ Estructura del Proyecto
+## 🧭 Estructura del Proyecto
+
 backend-chatbot-medico/
 ├── src/
-│   ├── controllers/          # Controladores de rutas
-│   │   └── chatbotController.js
-│   ├── services/             # Lógica de negocio
-│   │   ├── openAIService.js  # Integración con OpenAI
-│   │   └── pacienteService.js # Gestión de pacientes
-│   └── utils/
-│       └── datosPrueba.js    # Datos de pacientes
-├── server.js                 # Servidor principal
-├── package.json              # Dependencias
-├── .env                      # Variables de entorno (NO SUBIR A GITHUB)
-├── .env.example              # Ejemplo de variables
-└── README.md                 # Este archivo
+│ ├── controllers/ # Controladores de rutas
+│ │ └── chatbotController.js # Controlador chatbot
+│ │
+│ ├── services/ # Lógica de negocio
+│ │ ├── openAIService.js # Integración con OpenAI
+│ │ └── pacienteService.js # Gestión de pacientes
+│ │
+│ └── utils/ # Utilidades
+│ └── datosPrueba.js # Datos de pacientes
+│
+├── server.js # Servidor principal
+├── package.json # Dependencias
+├── .env # Variables de entorno (NO SUBIR A GITHUB)
+├── .env.example # Ejemplo de variables
+└── README.md # Este archivo (documentación)
+
 🔧 Configuración para Desarrollo
 1. Variables de entorno necesarias
 env
