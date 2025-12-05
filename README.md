@@ -181,8 +181,8 @@ dotenv: Manejo de variables de entorno
 
 nodemon: Recarga automática en desarrollo
 
-##🚀 Despliegue en Render.com (Para producción)
-Pasos para desplegar:
+## 🚀 Despliegue en Render.com (Para producción)
+### Pasos para desplegar:
 Sube el código a GitHub
 
 Crea cuenta en Render.com
