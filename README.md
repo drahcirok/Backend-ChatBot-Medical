@@ -60,28 +60,29 @@ npm run dev
 # Modo producción
 npm start
 ```
-🌐 Acceso al Servidor
+## 🌐 Acceso al Servidor
 Una vez ejecutado, el servidor estará disponible en:
 
 URL Local: http://localhost:3000
 
 API Base: http://localhost:3000/api
 
-📡 Endpoints de la API
-Salud del sistema
+## 📡 Endpoints de la API
+Estado del sistema
 
-GET /api/health
-Listar pacientes
+- GET /api/health
+### Listar pacientes
 
-GET /api/chatbot/pacientes
-Obtener paciente específico
+- GET /api/chatbot/pacientes
+### Obtener paciente específico
 
-GET /api/chatbot/paciente/{id}
-Ejemplo: GET /api/chatbot/paciente/1
+- GET /api/chatbot/paciente/{id}
+- Ejemplo: GET /api/chatbot/paciente/1
 
-Consultar al chatbot médico
+### Consultar al chatbot médico
 
-POST /api/chatbot/consultar
+- POST /api/chatbot/consultar
+```bash
 Body:
 
 json
@@ -101,10 +102,11 @@ json
   "edad": 46,
   "altura": 1.75
 }
-Ejemplos de uso
+```
+### Ejemplos de uso
 
 GET /api/ejemplos
-🧪 Pruebas con cURL
+##🧪 Pruebas con cURL
 1. Verificar que el servidor funciona
 ```bash
 curl http://localhost:3000/api/health
@@ -125,24 +127,24 @@ curl -X PUT http://localhost:3000/api/chatbot/paciente/1 \
 ```bash
 curl http://localhost:3000/api/chatbot/paciente/1
 ```
-📊 Datos Predefinidos
-El sistema incluye 3 pacientes con historiales completos:
+## 📊 Datos Predefinidos
+### El sistema incluye 3 pacientes con historiales completos:
 
-Paciente 1: Juan Carlos Pérez (45 años)
+### Paciente 1: Juan Carlos Pérez (45 años)
 Diagnóstico: Hipertensión arterial
 
 Exámenes: Hemograma, Perfil lipídico, Química sanguínea
 
 Valores destacados: Hemoglobina baja (12.5 g/dL), Colesterol LDL alto
 
-Paciente 2: María Fernanda López (32 años)
+### Paciente 2: María Fernanda López (32 años)
 Diagnóstico: Hipotiroidismo subclínico
 
 Exámenes: Hormonas tiroideas, Hemoglobina glicosilada
 
 Valores destacados: TSH elevada (4.8 mIU/L), Prediabetes
 
-Paciente 3: Carlos Alberto Ramírez (58 años)
+### Paciente 3: Carlos Alberto Ramírez (58 años)
 Diagnóstico: Diabetes tipo 2
 
 Exámenes: Curva de tolerancia a glucosa, Hemoglobina glicosilada
@@ -171,19 +173,19 @@ npm start        # Inicia en modo producción
 npm test         # Ejecuta tests (si los hay)
 ```
 ### 3. Dependencias principales
-express: Framework web
+- express: Framework web
 
-openai: Cliente para OpenAI API
+- openai: Cliente para OpenAI API
 
-cors: Middleware para CORS
+- cors: Middleware para CORS
 
-dotenv: Manejo de variables de entorno
+- dotenv: Manejo de variables de entorno
 
-nodemon: Recarga automática en desarrollo
+- nodemon: Recarga automática en desarrollo
 
 ## 🚀 Despliegue en Render.com (Para producción)
 ### Pasos para desplegar:
-Sube el código a GitHub
+- Sube el código a GitHub
 
 - Crea cuenta en Render.com
 
@@ -281,7 +283,7 @@ El servidor no responde
 3. Verifica que no haya errores en la terminal
 ```
 ## 📞 Soporte
-###Para problemas con OpenAI:
+### Para problemas con OpenAI:
 Verifica tu API key en OpenAI Dashboard
 
 Revisa tu saldo en Usage Dashboard
