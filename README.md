@@ -215,29 +215,29 @@ Datos en memoria: Se pierden al reiniciar el servidor
 ## 💡 Ejemplos de Preguntas para el Chatbot
 ### Análisis de exámenes:
 
-"¿Por qué tengo baja la hemoglobina?"
+- "¿Por qué tengo baja la hemoglobina?"
 
-"Explícame los resultados de mi perfil lipídico"
+- "Explícame los resultados de mi perfil lipídico"
 
-"¿Qué significa que mi TSH sea 4.8?"
+- "¿Qué significa que mi TSH sea 4.8?"
 
-###Interpretación de valores:
+### Interpretación de valores:
 
-"¿Mis niveles de glucosa son normales?"
+- "¿Mis niveles de glucosa son normales?"
 
-"¿Cómo mejorar mi colesterol LDL?"
+- "¿Cómo mejorar mi colesterol LDL?"
 
-"¿Debo preocuparme por mi frecuencia cardíaca?"
+- "¿Debo preocuparme por mi frecuencia cardíaca?"
 
-###Recomendaciones generales:
+### Recomendaciones generales:
 
-"¿Qué dieta debo seguir con hipertensión?"
+- "¿Qué dieta debo seguir con hipertensión?"
 
-"¿Cómo controlar la diabetes tipo 2?"
+- "¿Cómo controlar la diabetes tipo 2?"
 
-"¿Qué ejercicios son recomendables para mi?"
+- "¿Qué ejercicios son recomendables para mi?"
 
-##⚠️ Limitaciones y Advertencias
+## ⚠️ Limitaciones y Advertencias
 ### 1. Uso de OpenAI
 Costo: ~$0.002 por consulta (con crédito inicial gratuito)
 
