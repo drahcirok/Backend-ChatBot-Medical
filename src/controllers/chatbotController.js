@@ -2,6 +2,7 @@ const openAIService = require('../services/openAIService');
 const pacienteService = require('../services/pacienteService');
 
 class ChatbotController {
+  // Procesar consulta médica
   async procesarConsulta(req, res) {
     try {
       const { pregunta, pacienteId = 1 } = req.body;
@@ -27,8 +28,6 @@ class ChatbotController {
       
       const resultado = await openAIService.procesarConsultaMedica(pacienteIdInt, pregunta);
       
-      console.log(`✅ Respuesta generada (${resultado.tokens || 'N/A'} tokens)`);
-      
       res.json({
         success: true,
         respuesta: resultado.respuesta,
@@ -46,25 +45,12 @@ class ChatbotController {
       res.status(500).json({
         success: false,
         error: 'Error procesando la consulta',
-        respuesta: `🩺 **Asistente Médico Virtual**
-        
-Lamento las dificultades técnicas. Mientras tanto:
-
-• Revisa los valores de referencia en tus exámenes
-• Anota preguntas específicas para tu médico
-• Considera si necesitas atención inmediata
-
-Puedes intentar con preguntas como:
-- "Explícame mi último hemograma"
-- "¿Qué significa que mi TSH sea 4.8?"
-- "¿Cómo mejorar mis niveles de colesterol?"
-
-O intenta nuevamente en unos momentos.`,
-        sugerencia: 'Reintenta con una pregunta más específica'
+        respuesta: "Lo siento, estoy teniendo problemas técnicos. Por favor, intenta nuevamente."
       });
     }
   }
   
+  // Obtener información del paciente
   async obtenerInformacionPaciente(req, res) {
     try {
       const { pacienteId } = req.params;
@@ -86,6 +72,7 @@ O intenta nuevamente en unos momentos.`,
       });
       
     } catch (error) {
+      console.error('❌ Error obteniendo información:', error);
       res.status(500).json({
         success: false,
         error: 'Error obteniendo información del paciente'
@@ -93,6 +80,63 @@ O intenta nuevamente en unos momentos.`,
     }
   }
   
+  // ✅ NUEVO: Actualizar datos del paciente
+  async actualizarPaciente(req, res) {
+    try {
+      const { pacienteId } = req.params;
+      const { peso, frecuenciaCardiaca, edad, altura } = req.body;
+      
+      const pacienteIdInt = parseInt(pacienteId);
+      
+      // Validar datos
+      if (peso && (peso < 20 || peso > 300)) {
+        return res.status(400).json({
+          success: false,
+          error: 'Peso inválido. Debe estar entre 20 y 300 kg.'
+        });
+      }
+      
+      if (frecuenciaCardiaca && (frecuenciaCardiaca < 40 || frecuenciaCardiaca > 200)) {
+        return res.status(400).json({
+          success: false,
+          error: 'Frecuencia cardíaca inválida. Debe estar entre 40 y 200 lpm.'
+        });
+      }
+      
+      // Actualizar paciente
+      const pacienteActualizado = pacienteService.actualizarPaciente(pacienteIdInt, {
+        peso,
+        frecuenciaCardiaca,
+        edad,
+        altura
+      });
+      
+      if (!pacienteActualizado) {
+        return res.status(404).json({
+          success: false,
+          error: 'Paciente no encontrado'
+        });
+      }
+      
+      console.log(`✅ Paciente ${pacienteId} actualizado:`, { peso, frecuenciaCardiaca });
+      
+      res.json({
+        success: true,
+        mensaje: 'Datos actualizados correctamente',
+        paciente: pacienteService.obtenerPacientePorId(pacienteIdInt),
+        nota: '⚠️ En Render.com, estos cambios se perderán cuando el servidor se reinicie.'
+      });
+      
+    } catch (error) {
+      console.error('❌ Error actualizando paciente:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al actualizar datos del paciente'
+      });
+    }
+  }
+  
+  // Obtener todos los pacientes
   async obtenerTodosPacientes(req, res) {
     try {
       const pacientes = pacienteService.obtenerTodosPacientes();
@@ -104,6 +148,7 @@ O intenta nuevamente en unos momentos.`,
       });
       
     } catch (error) {
+      console.error('❌ Error obteniendo pacientes:', error);
       res.status(500).json({
         success: false,
         error: 'Error obteniendo lista de pacientes'
@@ -111,96 +156,45 @@ O intenta nuevamente en unos momentos.`,
     }
   }
   
-  async analizarTendencias(req, res) {
+  // Obtener datos completos (para debug)
+  async obtenerDatosCompletos(req, res) {
     try {
-      const { pacienteId, parametro } = req.body;
-      
-      if (!parametro) {
-        return res.status(400).json({
-          success: false,
-          error: 'El parámetro es requerido',
-          ejemplo: 'hemoglobina, colesterolLDL, TSH, glucosa'
-        });
-      }
-      
-      const pacienteIdInt = parseInt(pacienteId || 1);
-      const resultado = await openAIService.analizarTendencias(pacienteIdInt, parametro);
+      const pacientesCompletos = pacienteService.obtenerPacientesCompletos();
       
       res.json({
         success: true,
-        analisis: resultado,
-        parametro: parametro,
-        pacienteId: pacienteIdInt
+        total: pacientesCompletos.length,
+        pacientes: pacientesCompletos,
+        nota: '⚠️ Estos son los datos en memoria del servidor'
       });
       
     } catch (error) {
       res.status(500).json({
         success: false,
-        error: 'Error analizando tendencias'
+        error: 'Error obteniendo datos completos'
       });
     }
   }
   
-  async generarResumenSalud(req, res) {
-    try {
-      const { pacienteId } = req.params;
-      const pacienteIdInt = parseInt(pacienteId);
-      
-      const resumen = await openAIService.generarResumenSalud(pacienteIdInt);
-      
-      res.json({
-        success: true,
-        resumen: resumen,
-        pacienteId: pacienteIdInt,
-        fechaGeneracion: new Date().toISOString()
-      });
-      
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: 'Error generando resumen de salud'
-      });
-    }
-  }
-  
-  async verificarValoresCriticos(req, res) {
-    try {
-      const { pacienteId } = req.params;
-      const pacienteIdInt = parseInt(pacienteId);
-      
-      const criticos = pacienteService.verificarValoresCriticos(pacienteIdInt);
-      
-      res.json({
-        success: true,
-        totalCriticos: criticos.length,
-        valoresCriticos: criticos,
-        recomendacion: criticos.length > 0 
-          ? 'Se recomienda revisión médica'
-          : 'No se detectaron valores críticos'
-      });
-      
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        error: 'Error verificando valores críticos'
-      });
-    }
-  }
-  
+  // Endpoint de salud
   async healthCheck(req, res) {
     res.json({
       status: '✅ Funcionando',
       servicio: 'Chatbot Médico con OpenAI',
-      version: '1.0.0',
+      version: '1.1.0', // Actualizado
       pacientes: pacienteService.obtenerTodosPacientes().length,
+      entorno: process.env.NODE_ENV || 'development',
+      despliegue: 'Render.com Ready',
       endpoints: [
+        'GET  /api/health',
+        'GET  /api/ejemplos',
+        'GET  /api/chatbot/pacientes',
+        'GET  /api/chatbot/paciente/:id',
+        'PUT  /api/chatbot/paciente/:id', // ← NUEVO
         'POST /api/chatbot/consultar',
-        'GET /api/chatbot/pacientes',
-        'GET /api/chatbot/paciente/:id',
-        'POST /api/chatbot/tendencias',
-        'GET /api/chatbot/:id/resumen',
-        'GET /api/chatbot/:id/criticos'
-      ]
+        'GET  /api/debug/datos' // ← Para debug
+      ],
+      nota: '⚠️ Servidor gratuito: puede tardar 30-50s en "despertar" tras 15min de inactividad'
     });
   }
 }

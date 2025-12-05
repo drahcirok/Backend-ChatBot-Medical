@@ -1,9 +1,14 @@
+// Datos de pacientes predefinidos
 const pacientes = [
   {
     id: 1,
     nombre: "Juan Carlos Pérez",
     edad: 45,
     genero: "M",
+    peso: 85,                    // ← AGREGADO
+    tipoSangre: "O+",            // ← AGREGADO
+    frecuenciaCardiaca: 72,      // ← AGREGADO
+    altura: 1.75,               // ← AGREGADO (metros)
     diagnosticoPrincipal: "Hipertensión arterial grado 1",
     medicamentos: ["Losartán 50mg 1x día", "Atorvastatina 20mg 1x día"],
     alergias: ["Penicilina", "Ibuprofeno"],
@@ -65,6 +70,10 @@ const pacientes = [
     nombre: "María Fernanda López",
     edad: 32,
     genero: "F",
+    peso: 62,                    // ← AGREGADO
+    tipoSangre: "A-",            // ← AGREGADO
+    frecuenciaCardiaca: 68,      // ← AGREGADO
+    altura: 1.65,               // ← AGREGADO
     diagnosticoPrincipal: "Hipotiroidismo subclínico",
     medicamentos: ["Levotiroxina 50μg 1x día"],
     alergias: [],
@@ -91,16 +100,6 @@ const pacientes = [
           HbA1c: { valor: "6.1", unidad: "%", normal: "<5.7", estado: "alto" }
         },
         observaciones: "Prediabetes. Controlar con dieta y ejercicio."
-      },
-      {
-        id: 6,
-        fecha: "2024-03-20",
-        tipo: "Perfil tiroideo de control",
-        resultados: {
-          TSH: { valor: "2.5", unidad: "mIU/L", normal: "0.4-4.0", estado: "normal" },
-          T4Libre: { valor: "1.4", unidad: "ng/dL", normal: "0.8-1.8", estado: "normal" }
-        },
-        observaciones: "Buen control con levotiroxina 50μg. Mantener dosis."
       }
     ],
     
@@ -120,6 +119,10 @@ const pacientes = [
     nombre: "Carlos Alberto Ramírez",
     edad: 58,
     genero: "M",
+    peso: 92,                    // ← AGREGADO
+    tipoSangre: "B+",            // ← AGREGADO
+    frecuenciaCardiaca: 85,      // ← AGREGADO (un poco elevada)
+    altura: 1.78,               // ← AGREGADO
     diagnosticoPrincipal: "Diabetes tipo 2",
     medicamentos: ["Metformina 850mg 2x día", "Gliclazida 30mg 1x día"],
     alergias: ["Sulfas"],
@@ -127,38 +130,29 @@ const pacientes = [
     
     examenes: [
       {
-        id: 7,
+        id: 6,
         fecha: "2024-01-30",
         tipo: "Curva de tolerancia a la glucosa",
         resultados: {
           glucosaAyuno: { valor: "125", unidad: "mg/dL", normal: "70-100", estado: "alto" },
-          glucosa120min: { valor: "210", unidad: "mg/dL", normal: "<140", estado: "alto" },
-          insulinaAyuno: { valor: "15", unidad: "μU/mL", normal: "2-25", estado: "normal" }
+          glucosa120min: { valor: "210", unidad: "mg/dL", normal: "<140", estado: "alto" }
         },
-        observaciones: "Diabetes mellitus tipo 2 confirmada. Resistencia a insulina."
+        observaciones: "Diabetes mellitus tipo 2 confirmada."
       },
       {
-        id: 8,
+        id: 7,
         fecha: "2024-03-01",
         tipo: "Hemoglobina glicosilada",
         resultados: {
           HbA1c: { valor: "7.8", unidad: "%", normal: "<5.7", estado: "alto" }
         },
         observaciones: "Control subóptimo. Ajustar tratamiento."
-      },
-      {
-        id: 9,
-        fecha: "2024-03-25",
-        tipo: "Microalbuminuria",
-        resultados: {
-          albuminuria: { valor: "45", unidad: "mg/g", normal: "<30", estado: "alto" }
-        },
-        observaciones: "Nefropatía diabética incipiente. Control estricto de glucemia."
       }
     ]
   }
 ];
 
+// Función para formatear contexto del paciente
 function formatearContextoPaciente(pacienteId) {
   const paciente = pacientes.find(p => p.id === pacienteId);
   if (!paciente) return null;
@@ -167,6 +161,10 @@ function formatearContextoPaciente(pacienteId) {
 Nombre: ${paciente.nombre}
 Edad: ${paciente.edad} años
 Género: ${paciente.genero}
+Peso: ${paciente.peso} kg
+Altura: ${paciente.altura} m
+Tipo de sangre: ${paciente.tipoSangre}
+Frecuencia cardíaca: ${paciente.frecuenciaCardiaca} lpm
 Diagnóstico principal: ${paciente.diagnosticoPrincipal}
 Medicamentos actuales: ${paciente.medicamentos.join(', ')}
 Alergias: ${paciente.alergias.length > 0 ? paciente.alergias.join(', ') : 'Ninguna'}
@@ -192,6 +190,7 @@ Antecedentes relevantes: ${paciente.antecedentes.join('; ')}
   return contexto;
 }
 
+// Valores de referencia globales
 const valoresReferencia = {
   "Hemograma": {
     "hemoglobina": { min: 13.5, max: 17.5, unidad: "g/dL" },
@@ -210,11 +209,22 @@ const valoresReferencia = {
   "Tiroides": {
     "TSH": { min: 0.4, max: 4.0, unidad: "mIU/L" },
     "T4Libre": { min: 0.8, max: 1.8, unidad: "ng/dL" }
+  },
+  "Vitales": {
+    "frecuenciaCardiaca": { min: 60, max: 100, unidad: "lpm" },
+    "peso": { imcMin: 18.5, imcMax: 24.9 }
   }
 };
+
+// Función para calcular IMC
+function calcularIMC(paciente) {
+  if (!paciente.peso || !paciente.altura) return null;
+  return (paciente.peso / (paciente.altura * paciente.altura)).toFixed(1);
+}
 
 module.exports = {
   pacientes,
   formatearContextoPaciente,
-  valoresReferencia
+  valoresReferencia,
+  calcularIMC
 };

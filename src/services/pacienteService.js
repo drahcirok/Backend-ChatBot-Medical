@@ -1,6 +1,7 @@
-const { pacientes, formatearContextoPaciente } = require('../utils/datosPrueba');
+const { pacientes, formatearContextoPaciente, calcularIMC } = require('../utils/datosPrueba');
 
 class PacienteService {
+  // Obtener todos los pacientes
   obtenerTodosPacientes() {
     return pacientes.map(p => ({
       id: p.id,
@@ -11,10 +12,13 @@ class PacienteService {
     }));
   }
   
+  // Obtener paciente por ID
   obtenerPacientePorId(id) {
     const paciente = pacientes.find(p => p.id === id);
     
     if (!paciente) return null;
+    
+    const imc = calcularIMC(paciente);
     
     return {
       id: paciente.id,
@@ -22,13 +26,18 @@ class PacienteService {
         nombre: paciente.nombre,
         edad: paciente.edad,
         genero: paciente.genero,
+        peso: paciente.peso,
+        altura: paciente.altura,
+        tipoSangre: paciente.tipoSangre,
+        frecuenciaCardiaca: paciente.frecuenciaCardiaca,
+        imc: imc,
         diagnostico: paciente.diagnosticoPrincipal
       },
       tratamiento: {
         medicamentos: paciente.medicamentos,
         alergias: paciente.alergias
       },
-      resumenExamenes: paciente.examenes.slice(-3).map(e => ({
+      resumenExamenes: paciente.examenes.slice(-2).map(e => ({
         fecha: e.fecha,
         tipo: e.tipo,
         resultadosDestacados: Object.entries(e.resultados)
@@ -38,6 +47,25 @@ class PacienteService {
     };
   }
   
+  // Actualizar datos del paciente (EN MEMORIA - para Render.com)
+  actualizarPaciente(pacienteId, datosActualizados) {
+    const pacienteIndex = pacientes.findIndex(p => p.id === pacienteId);
+    
+    if (pacienteIndex === -1) return null;
+    
+    // Actualizar solo los campos permitidos
+    const camposPermitidos = ['peso', 'frecuenciaCardiaca', 'edad', 'altura'];
+    
+    camposPermitidos.forEach(campo => {
+      if (datosActualizados[campo] !== undefined) {
+        pacientes[pacienteIndex][campo] = datosActualizados[campo];
+      }
+    });
+    
+    return pacientes[pacienteIndex];
+  }
+  
+  // Obtener exámenes de paciente
   obtenerExamenesPaciente(pacienteId) {
     const paciente = pacientes.find(p => p.id === pacienteId);
     
@@ -52,68 +80,14 @@ class PacienteService {
     }));
   }
   
-  buscarExamenesPorParametro(pacienteId, parametro) {
-    const paciente = pacientes.find(p => p.id === pacienteId);
-    
-    if (!paciente) return [];
-    
-    const resultados = [];
-    
-    paciente.examenes.forEach(examen => {
-      Object.entries(examen.resultados).forEach(([param, data]) => {
-        if (param.toLowerCase().includes(parametro.toLowerCase())) {
-          resultados.push({
-            fecha: examen.fecha,
-            examen: examen.tipo,
-            parametro: param,
-            valor: `${data.valor} ${data.unidad}`,
-            estado: data.estado,
-            referencia: data.normal
-          });
-        }
-      });
-    });
-    
-    return resultados;
-  }
-  
+  // Obtener contexto formateado
   obtenerContextoPaciente(pacienteId) {
     return formatearContextoPaciente(pacienteId);
   }
   
-  verificarValoresCriticos(pacienteId) {
-    const paciente = pacientes.find(p => p.id === pacienteId);
-    
-    if (!paciente) return [];
-    
-    const criticos = [];
-    
-    paciente.examenes.forEach(examen => {
-      Object.entries(examen.resultados).forEach(([param, data]) => {
-        if (data.estado === 'alto' || data.estado === 'bajo') {
-          const valor = parseFloat(data.valor);
-          const [min, max] = data.normal.split('-').map(Number);
-          
-          let severidad = 'leve';
-          if (data.estado === 'alto' && max) {
-            const porcentaje = ((valor - max) / max) * 100;
-            severidad = porcentaje > 50 ? 'grave' : porcentaje > 20 ? 'moderado' : 'leve';
-          }
-          
-          criticos.push({
-            fecha: examen.fecha,
-            parametro: param,
-            valor: `${data.valor} ${data.unidad}`,
-            normal: data.normal,
-            estado: data.estado,
-            severidad: severidad,
-            examen: examen.tipo
-          });
-        }
-      });
-    });
-    
-    return criticos;
+  // Obtener pacientes completos (para uso interno)
+  obtenerPacientesCompletos() {
+    return pacientes;
   }
 }
 
