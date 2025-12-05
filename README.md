@@ -153,19 +153,24 @@ Valores destacados: Glucosa elevada, HbA1c alto (7.8%)
 
 <img width="347" height="345" alt="image" src="https://github.com/user-attachments/assets/fb3ed3e7-a5e6-48aa-8350-377659f11b80" />
 
-🔧 Configuración para Desarrollo
-1. Variables de entorno necesarias
-env
-PORT=3000                         # Puerto del servidor
-OPENAI_API_KEY=sk-...             # Tu clave de OpenAI
-NODE_ENV=development              # Entorno
-2. Scripts disponibles
+## 🧰 Configuración para Desarrollo
+
+### 1. Variables de Entorno Requeridas
+
+Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
+```bash
+PORT=3000
+OPENAI_API_KEY=tu_api_key_aqui
+NODE_ENV=development
+```
+
+### 2. Scripts disponibles
 ```bash
 npm run dev      # Inicia con nodemon (recarga automática)
 npm start        # Inicia en modo producción
 npm test         # Ejecuta tests (si los hay)
 ```
-3. Dependencias principales
+### 3. Dependencias principales
 express: Framework web
 
 openai: Cliente para OpenAI API
@@ -176,7 +181,7 @@ dotenv: Manejo de variables de entorno
 
 nodemon: Recarga automática en desarrollo
 
-🚀 Despliegue en Render.com (Para producción)
+##🚀 Despliegue en Render.com (Para producción)
 Pasos para desplegar:
 Sube el código a GitHub
 
@@ -207,8 +212,8 @@ Cold start: Primera petición tarda 30-50 segundos
 
 Datos en memoria: Se pierden al reiniciar el servidor
 
-💡 Ejemplos de Preguntas para el Chatbot
-Análisis de exámenes:
+##💡 Ejemplos de Preguntas para el Chatbot
+###Análisis de exámenes:
 
 "¿Por qué tengo baja la hemoglobina?"
 
@@ -216,7 +221,7 @@ Análisis de exámenes:
 
 "¿Qué significa que mi TSH sea 4.8?"
 
-Interpretación de valores:
+###Interpretación de valores:
 
 "¿Mis niveles de glucosa son normales?"
 
@@ -224,7 +229,7 @@ Interpretación de valores:
 
 "¿Debo preocuparme por mi frecuencia cardíaca?"
 
-Recomendaciones generales:
+###Recomendaciones generales:
 
 "¿Qué dieta debo seguir con hipertensión?"
 
@@ -232,27 +237,27 @@ Recomendaciones generales:
 
 "¿Qué ejercicios son recomendables para mi?"
 
-⚠️ Limitaciones y Advertencias
-1. Uso de OpenAI
+##⚠️ Limitaciones y Advertencias
+### 1. Uso de OpenAI
 Costo: ~$0.002 por consulta (con crédito inicial gratuito)
 
 Rate limits: Límites de solicitudes por minuto
 
 Precisión: Las respuestas son orientativas, no diagnósticos
 
-2. Datos en memoria
+### 2. Datos en memoria
 Los cambios se pierden al reiniciar el servidor
 
 Solo para desarrollo/demo (no usar en producción real)
 
-3. Para uso real
+### 3. Para uso real
 Agregar base de datos (MongoDB, PostgreSQL)
 
 Implementar autenticación de usuarios
 
 Agregar validación de datos más estricta
 
-🔍 Solución de Problemas
+## 🔍 Solución de Problemas
 Error: "Cannot find module"
 ```bash
 # Si falta algún módulo:
@@ -275,49 +280,49 @@ El servidor no responde
 2. Prueba en navegador: http://localhost:3000
 3. Verifica que no haya errores en la terminal
 ```
-📞 Soporte
-Para problemas con OpenAI:
+## 📞 Soporte
+###Para problemas con OpenAI:
 Verifica tu API key en OpenAI Dashboard
 
 Revisa tu saldo en Usage Dashboard
 
-Para problemas con el código:
+### Para problemas con el código:
 Verifica que todas las dependencias estén instaladas
 
 Revisa que el archivo .env esté correctamente configurado
 
 Asegúrate de usar Node.js 14 o superior
 
-Mensajes de error comunes:
+### Mensajes de error comunes:
 "Rate limit exceeded": Espera unos minutos antes de hacer más consultas
 
 "Invalid API key": Genera una nueva clave en OpenAI
 
 "Server sleeping": Es normal en Render.com, espera 30-50 segundos
 
-📝 Notas para el Desarrollo
-Agregar un nuevo paciente:
+## 📝 Notas para el Desarrollo
+### Agregar un nuevo paciente:
 Edita src/utils/datosPrueba.js
 
 Agrega un nuevo objeto en el array pacientes
 
 Incluye todos los campos requeridos (nombre, edad, examenes, etc.)
 
-Modificar endpoints:
+### Modificar endpoints:
 Edita src/controllers/chatbotController.js
 
 Agrega tu nuevo método
 
 Registra la ruta en server.js
 
-Conectar con frontend:
+### Conectar con frontend:
 El frontend debe apuntar a:
 
 Local: http://localhost:3000
 
 Producción: https://tu-backend.onrender.com
 
-📄 Licencia
+## 📄 Licencia
 Este proyecto es para fines educativos. No usar para diagnóstico médico real.
 
 🎯 Resumen para Comenzar
