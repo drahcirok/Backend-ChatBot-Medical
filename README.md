@@ -185,25 +185,25 @@ nodemon: Recarga automática en desarrollo
 ### Pasos para desplegar:
 Sube el código a GitHub
 
--Crea cuenta en Render.com
+- Crea cuenta en Render.com
 
--Haz clic en "New +" → "Web Service"
+- Haz clic en "New +" → "Web Service"
 
--Conecta tu repositorio de GitHub
+- Conecta tu repositorio de GitHub
 
--Configura:
+- Configura:
 
--Build Command: npm install
+- Build Command: npm install
 
--Start Command: node server.js
+- Start Command: node server.js
 
--Agrega variables de entorno en Render:
+- Agrega variables de entorno en Render:
 
--OPENAI_API_KEY: Tu clave de OpenAI
+- OPENAI_API_KEY: Tu clave de OpenAI
 
--NODE_ENV: production
+- NODE_ENV: production
 
--Haz clic en "Create Web Service"
+- Haz clic en "Create Web Service"
 
 ### Nota importante para Render.com:
 Plan gratuito: El servidor "duerme" tras 15 min de inactividad
