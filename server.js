@@ -4,6 +4,8 @@ require('dotenv').config();
 
 const chatbotController = require('./src/controllers/chatbotController');
 
+
+
 const app = express();
 
 // Configuración para Render.com
@@ -29,6 +31,8 @@ app.use((req, res, next) => {
 // Health check
 app.get('/api/health', chatbotController.healthCheck);
 
+app.get('/api/chatbot/sugerencias/:pacienteId', chatbotController.obtenerSugerencias);
+
 // Consultar al chatbot médico
 app.post('/api/chatbot/consultar', chatbotController.procesarConsulta);
 
@@ -40,6 +44,8 @@ app.get('/api/chatbot/paciente/:pacienteId', chatbotController.obtenerInformacio
 
 // ✅ NUEVO: Actualizar datos del paciente
 app.put('/api/chatbot/paciente/:pacienteId', chatbotController.actualizarPaciente);
+
+
 
 // ==================== EJEMPLOS ====================
 app.get('/api/ejemplos', (req, res) => {
@@ -65,7 +71,7 @@ app.get('/api/ejemplos', (req, res) => {
       body: { peso: 88, frecuenciaCardiaca: 75 }
     }
   ];
-  
+
   res.json({
     success: true,
     ejemplos: ejemplos
@@ -132,50 +138,50 @@ app.get('/', (req, res) => {
       <body>
         <h1>🤖 Chatbot Médico - Backend</h1>
         <p>Servidor funcionando correctamente.</p>
-        
+
         <div class="note">
           <strong>⚠️ IMPORTANTE PARA RENDER.COM:</strong><br>
           • El servidor gratuito "duerme" tras 15min de inactividad<br>
           • La primera petición puede tardar 30-50s en "despertar"<br>
           • Los datos se pierden al reiniciar (se usan en memoria)
         </div>
-        
+
         <div class="container">
           <h2>📋 Endpoints disponibles:</h2>
-          
+
           <div class="endpoint">
             <strong><a href="/api/health">GET /api/health</a></strong><br>
             Verificar estado del servidor
           </div>
-          
+
           <div class="endpoint">
             <strong><a href="/api/chatbot/pacientes">GET /api/chatbot/pacientes</a></strong><br>
             Listar pacientes disponibles
           </div>
-          
+
           <div class="endpoint">
             <strong><a href="/api/ejemplos">GET /api/ejemplos</a></strong><br>
             Ejemplos de uso de la API
           </div>
-          
+
           <div class="endpoint">
             <strong>POST /api/chatbot/consultar</strong><br>
             Consultar al chatbot médico<br>
             <code>{"pregunta": "tu pregunta", "pacienteId": 1}</code>
           </div>
-          
+
           <div class="endpoint">
             <strong>PUT /api/chatbot/paciente/:id</strong><br>
             Actualizar datos del paciente<br>
             <code>{"peso": 85, "frecuenciaCardiaca": 72}</code>
           </div>
-          
+
           <h2>🔧 Para probar con cURL:</h2>
           <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; overflow-x: auto;">
 curl -X POST https://tu-backend.onrender.com/api/chatbot/consultar \\
   -H "Content-Type: application/json" \\
   -d '{"pregunta":"¿Por qué tengo baja la hemoglobina?", "pacienteId":1}'</pre>
-          
+
           <h2>📊 Pacientes disponibles:</h2>
           <ul>
             <li><strong>ID 1:</strong> Juan Carlos Pérez (45 años) - Hipertensión</li>
@@ -183,7 +189,7 @@ curl -X POST https://tu-backend.onrender.com/api/chatbot/consultar \\
             <li><strong>ID 3:</strong> Carlos Alberto Ramírez (58 años) - Diabetes</li>
           </ul>
         </div>
-        
+
         <p style="margin-top: 30px; font-size: 0.9em; opacity: 0.8;">
           Backend preparado para Render.com | OpenAI GPT-3.5 Turbo | Node.js Express
         </p>
@@ -200,7 +206,7 @@ app.listen(PORT, () => {
 📊 Pacientes cargados: 3
 💡 OpenAI: ${process.env.OPENAI_API_KEY ? '✅ Configurado' : '❌ No configurado'}
 ⚙️  Entorno: ${process.env.NODE_ENV || 'development'}
-  
+
 📋 **Endpoints:**
   GET  /api/health                → Verificar estado
   GET  /api/ejemplos             → Ejemplos de uso
@@ -208,14 +214,14 @@ app.listen(PORT, () => {
   GET  /api/chatbot/paciente/:id → Información de paciente
   PUT  /api/chatbot/paciente/:id → Actualizar paciente
   POST /api/chatbot/consultar    → Consultar chatbot
-  
+
 🔧 **Para Render.com:**
   1. Sube a GitHub
   2. Conecta en Render.com
   3. Agrega variable: OPENAI_API_KEY=tu_clave
   4. Build Command: npm install
   5. Start Command: node server.js
-  
+
 ⚠️  **Nota importante:**
    El servidor gratuito "duerme" tras 15min de inactividad.
    La primera petición puede tardar 30-50s en "despertar".
