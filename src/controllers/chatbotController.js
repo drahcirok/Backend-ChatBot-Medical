@@ -38,6 +38,53 @@ class ChatbotController {
       });
     }
   }
+  async obtenerSugerencias(req, res) {
+    try {
+      const { pacienteId } = req.params;
+      const paciente = pacienteService.obtenerPacientePorId(parseInt(pacienteId));
+
+      if (!paciente) {
+        return res.status(404).json({ success: false, error: 'Paciente no encontrado' });
+      }
+
+      // Lógica de sugerencias contextuales
+      let sugerencias = [
+        "¿Cómo está mi salud general?",
+        "¿Cuándo es mi próxima cita?"
+      ];
+
+      // Sugerencias basadas en patologías
+      if (paciente.informacionBasica.diagnostico.includes("Hipertensión")) {
+        sugerencias.push("¿Qué cuidados debo tener con la hipertensión?");
+        sugerencias.push("¿Puedo comer alimentos con sal?");
+      }
+
+      // Sugerencias basadas en resultados anormales
+      if (paciente.resumenExamenes.some(e => e.resultadosDestacados.length > 0)) {
+        sugerencias.push("¿Me explicas mis resultados fuera de rango?");
+      }
+
+      // Sugerencias basadas en medicamentos
+      if (paciente.tratamiento.medicamentos.length > 0) {
+        sugerencias.push(`¿Para qué sirve el ${paciente.tratamiento.medicamentos[0].split(' ')[0]}?`);
+      }
+
+      // Sugerencias de seguridad (Alergias)
+      if (paciente.tratamiento.alergias.length > 0) {
+        sugerencias.push("¿Qué medicamentos debo evitar por mis alergias?");
+      }
+
+      res.json({
+        success: true,
+        paciente: paciente.informacionBasica.nombre,
+        sugerencias: sugerencias.slice(0, 4) // Devolver las top 4
+      });
+
+    } catch (error) {
+      console.error('Error generando sugerencias:', error);
+      res.status(500).json({ success: false, error: 'Error interno' });
+    }
+  }
 
   // Obtener información del paciente
   async obtenerInformacionPaciente(req, res) {
