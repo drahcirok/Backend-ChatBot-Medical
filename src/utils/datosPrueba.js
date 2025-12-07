@@ -13,7 +13,7 @@ const pacientes = [
     medicamentos: ["Losartán 50mg 1x día", "Atorvastatina 20mg 1x día"],
     alergias: ["Penicilina", "Ibuprofeno"],
     antecedentes: ["Padre con diabetes", "Madre hipertensa"],
-    
+
     examenes: [
       {
         id: 1,
@@ -53,7 +53,7 @@ const pacientes = [
         }
       }
     ],
-    
+
     consultas: [
       {
         fecha: "2024-03-15",
@@ -64,7 +64,7 @@ const pacientes = [
       }
     ]
   },
-  
+
   {
     id: 2,
     nombre: "María Fernanda López",
@@ -78,7 +78,7 @@ const pacientes = [
     medicamentos: ["Levotiroxina 50μg 1x día"],
     alergias: [],
     antecedentes: ["Tiroiditis autoinmune familiar"],
-    
+
     examenes: [
       {
         id: 4,
@@ -102,7 +102,7 @@ const pacientes = [
         observaciones: "Prediabetes. Controlar con dieta y ejercicio."
       }
     ],
-    
+
     consultas: [
       {
         fecha: "2024-03-25",
@@ -113,7 +113,7 @@ const pacientes = [
       }
     ]
   },
-  
+
   {
     id: 3,
     nombre: "Carlos Alberto Ramírez",
@@ -127,7 +127,7 @@ const pacientes = [
     medicamentos: ["Metformina 850mg 2x día", "Gliclazida 30mg 1x día"],
     alergias: ["Sulfas"],
     antecedentes: ["Diabetes familiar", "Obesidad grado I"],
-    
+
     examenes: [
       {
         id: 6,
@@ -156,7 +156,7 @@ const pacientes = [
 function formatearContextoPaciente(pacienteId) {
   const paciente = pacientes.find(p => p.id === pacienteId);
   if (!paciente) return null;
-  
+
   let contexto = `=== INFORMACIÓN DEL PACIENTE ===
 Nombre: ${paciente.nombre}
 Edad: ${paciente.edad} años
@@ -174,19 +174,19 @@ Antecedentes relevantes: ${paciente.antecedentes.join('; ')}
 
   paciente.examenes.forEach(examen => {
     contexto += `\n📅 ${examen.fecha} - ${examen.tipo}:\n`;
-    
+
     Object.entries(examen.resultados).forEach(([param, data]) => {
-      const emoji = data.estado === 'normal' ? '✅' : 
-                   data.estado === 'alto' ? '📈' : 
+      const emoji = data.estado === 'normal' ? '✅' :
+                   data.estado === 'alto' ? '📈' :
                    data.estado === 'bajo' ? '📉' : '⚪';
       contexto += `  ${emoji} ${param}: ${data.valor} ${data.unidad} (Normal: ${data.normal})\n`;
     });
-    
+
     if (examen.observaciones) {
       contexto += `  📝 Observaciones: ${examen.observaciones}\n`;
     }
   });
-  
+
   return contexto;
 }
 

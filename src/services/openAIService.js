@@ -6,151 +6,73 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-const SYSTEM_PROMPT = `Eres MEDIChat, un asistente médico virtual especializado en análisis de exámenes clínicos.
+// MODIFICACIÓN 1: Prompt más flexible e inteligente
+const SYSTEM_PROMPT = `Eres MEDIChat, un asistente médico virtual avanzado.
 
-ROLES Y RESPONSABILIDADES:
-1. Especialista en interpretación de laboratorios clínicos
-2. Educador en terminología médica para pacientes
-3. Orientador en seguimiento de tratamientos
-4. Analista de tendencias en resultados
+TIENES DOS FUENTES DE INFORMACIÓN:
+1. CONOCIMIENTO MÉDICO GENERAL: Úsalo para responder preguntas teóricas, definiciones, o consejos de salud generales (ej: "¿Qué es la diabetes?", "¿Es bueno correr?").
+2. CONTEXTO DEL PACIENTE: Úsalo SOLO si la pregunta se refiere específicamente al usuario (ej: "¿Cómo salieron mis exámenes?", "¿Puedo tomar ibuprofeno con mis medicamentos actuales?").
 
-METODOLOGÍA DE RESPUESTA:
-1. CONTEXTUALIZA siempre los resultados del paciente
-2. MENCIONA valores de referencia pertinentes
-3. EXPLICA términos médicos de manera sencilla
-4. SEÑALA hallazgos relevantes
-5. SUGIERE preguntas para el médico tratante
-6. IDENTIFICA patrones o tendencias
+REGLAS DE COMPORTAMIENTO:
+- Si el usuario pregunta algo general, RESPONDE GENERALMENTE. No fuerces los datos del paciente si no vienen al caso.
+- Si el usuario pregunta por "mis datos", "mi salud" o "mis exámenes", consulta el contexto adjunto.
+- Si el usuario saluda o conversa casualmente, sé amable y breve.
+- Mantén un tono profesional, empático y claro.
 
-LÍMITES PROFESIONALES:
-- NO das diagnósticos definitivos
-- NO prescribes medicamentos
-- NO sustituyes consulta médica
-- EN CASOS CRÍTICOS: derivar a urgencias
-
-ESTILO DE COMUNICACIÓN:
-- Empático pero profesional
-- Claro sin tecnicismos innecesarios
-- Estructurado pero conversacional
-- Incluye emojis médicos relevantes (🩺, 💊, 📈, 📉)
-
-MARCO DE REFERENCIA PARA VALORES:
-${JSON.stringify(valoresReferencia, null, 2)}
-
-SIEMPRE finaliza recordando: "Consulta estos hallazgos con tu médico en la próxima cita."`;
+ADVERTENCIA: Tú no sustituyes a un médico real. En casos graves, sugiere ir a urgencias.`;
 
 class OpenAIService {
-  async procesarConsultaMedica(pacienteId, pregunta) {
+
+  // MODIFICACIÓN 2: Ahora aceptamos 'historial' como parámetro
+  async procesarConsultaMedica(pacienteId, pregunta, historial = []) {
     try {
       const contextoPaciente = formatearContextoPaciente(pacienteId);
-      
-      if (!contextoPaciente) {
-        throw new Error('Paciente no encontrado');
-      }
-      
+
+      // Construimos la memoria del chat
+      // 1. Mensaje del Sistema (Instrucciones + Datos del Paciente)
       const messages = [
-        { 
-          role: "system", 
-          content: SYSTEM_PROMPT 
-        },
-        { 
-          role: "user", 
-          content: `CONTEXTO DEL PACIENTE:\n${contextoPaciente}\n\nPREGUNTA DEL PACIENTE:\n${pregunta}\n\nPOR FAVOR RESPONDE:` 
+        {
+          role: "system",
+          content: `${SYSTEM_PROMPT}\n\n=== DATOS DEL PACIENTE ACTUAL (ID: ${pacienteId}) ===\n${contextoPaciente}\n=====================================`
         }
       ];
-      
-      const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: messages,
-        temperature: 0.3,
-        max_tokens: 800,
-        top_p: 1,
-        frequency_penalty: 0,
-        presence_penalty: 0
+
+      // 2. Insertamos el historial previo (limpiando formatos si es necesario)
+      // El frontend manda role 'bot', OpenAI espera 'assistant'
+      historial.forEach(msg => {
+        messages.push({
+          role: msg.role === 'bot' ? 'assistant' : 'user',
+          content: msg.content
+        });
       });
-      
-      return {
-        respuesta: response.choices[0].message.content,
-        modelo: "gpt-3.5-turbo",
-        tokens: response.usage.total_tokens
-      };
-      
-    } catch (error) {
-      console.error('Error en OpenAIService:', error);
-      
-      return {
-        respuesta: `🔧 Estoy teniendo dificultades técnicas. 
 
-Mientras resolvemos esto, te puedo orientar que:
+      // 3. La pregunta actual del usuario
+      messages.push({ role: "user", content: pregunta });
 
-• Los valores de referencia para hemoglobina son: 13.5-17.5 g/dL (hombres) y 12.0-15.5 g/dL (mujeres)
-• Para colesterol LDL ideal es menor a 100 mg/dL
-• La glucosa en ayunas normal es 70-100 mg/dL
+      console.log(`🧠 Enviando a OpenAI ${messages.length} mensajes (Contexto + ${historial.length} historia + 1 actual)`);
 
-¿Podrías reformular tu pregunta o intentar nuevamente en un momento?`,
-        modelo: "fallback",
-        error: error.message
-      };
-    }
-  }
-  
-  async analizarTendencias(pacienteId, parametro) {
-    try {
-      const contextoPaciente = formatearContextoPaciente(pacienteId);
-      
-      const messages = [
-        { 
-          role: "system", 
-          content: `Eres un analista de tendencias médicas. Analiza la evolución del parámetro solicitado a través del tiempo. Identifica patrones, mejoras o deterioros.` 
-        },
-        { 
-          role: "user", 
-          content: `Contexto del paciente:\n${contextoPaciente}\n\nAnaliza específicamente el parámetro: ${parametro}\n\nProporciona: 1. Tendencia temporal 2. Posibles causas 3. Recomendaciones de seguimiento` 
-        }
-      ];
-      
       const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-3.5-turbo", // O "gpt-4" si tienes acceso y presupuesto
         messages: messages,
-        temperature: 0.4,
-        max_tokens: 600
-      });
-      
-      return response.choices[0].message.content;
-      
-    } catch (error) {
-      return "No puedo analizar tendencias en este momento. Por favor, consulta directamente con tu médico.";
-    }
-  }
-  
-  async generarResumenSalud(pacienteId) {
-    try {
-      const contextoPaciente = formatearContextoPaciente(pacienteId);
-      
-      const messages = [
-        { 
-          role: "system", 
-          content: `Genera un resumen ejecutivo de salud en formato de informe médico. Incluye: 1. Estado general 2. Principales hallazgos 3. Áreas de atención 4. Recomendaciones generales` 
-        },
-        { 
-          role: "user", 
-          content: `Contexto del paciente:\n${contextoPaciente}\n\nGenera un resumen conciso:` 
-        }
-      ];
-      
-      const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: messages,
-        temperature: 0.3,
+        temperature: 0.7, // Un poco más creativo para charlas generales
         max_tokens: 500
       });
-      
-      return response.choices[0].message.content;
-      
+
+      return {
+        respuesta: response.choices[0].message.content,
+        modelo: response.model
+      };
+
     } catch (error) {
-      return "No puedo generar el resumen en este momento.";
+      console.error('Error en OpenAI:', error);
+      return {
+        respuesta: "Lo siento, tuve un problema técnico consultando mi base de conocimientos médica.",
+        modelo: "error"
+      };
     }
   }
+
+  // ... (puedes dejar el método generarResumenSalud igual o borrarlo si no lo usas) ...
 }
 
 module.exports = new OpenAIService();
